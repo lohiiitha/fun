@@ -20,7 +20,7 @@ Production-ready monorepo scaffold for a Government School Management Portal wit
 
 ## 2) Database Schema (Prisma)
 
-Path: `/home/runner/work/fun/fun/apps/backend/prisma/schema.prisma`
+Path: `apps/backend/prisma/schema.prisma`
 
 Core entities:
 - `User` (role: ADMIN/TEACHER/STUDENT/PARENT)
@@ -41,7 +41,7 @@ Key constraints:
 ## 3) Folder Structure
 
 ```text
-/home/runner/work/fun/fun
+.
 ├── apps
 │   ├── backend
 │   │   ├── prisma
@@ -133,7 +133,7 @@ Base URL: `http://localhost:4000/api/v1`
 
 ### Local setup
 ```bash
-cd /home/runner/work/fun/fun
+cd .
 
 # backend env
 cp apps/backend/.env.example apps/backend/.env
@@ -152,7 +152,7 @@ npx prisma migrate dev --name init
 npm run dev
 
 # run frontend (separate terminal)
-cd /home/runner/work/fun/fun
+cd .
 npm run dev
 ```
 
