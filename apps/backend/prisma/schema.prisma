@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+enum FeedbackCategory {
+  QUERY
+  FEEDBACK
+  COMPLAINT
+}
+
+model User {
+  id            String          @id @default(uuid())
+  fullName      String
+  email         String          @unique
+  passwordHash  String
+  role          UserRole
+  studentProfile StudentProfile?
+  teacherProfile TeacherProfile?
+  parentProfile ParentProfile?
+  announcements Announcement[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model StudentProfile {
+  id           String        @id @default(uuid())
+  userId       String        @unique
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admissionNo  String        @unique
+  grade        String
+  section      String
+  attendance   Attendance[]
+  results      Result[]
+  parents      StudentParent[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model TeacherProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department  String?
+  responsibility String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ParentProfile {
+  id          String         @id @default(uuid())
+  userId      String         @unique
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  students    StudentParent[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model StudentParent {
+  id         String         @id @default(uuid())
+  studentId  String
+  parentId   String
+  student    StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  parent     ParentProfile  @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  relation   String?
+
+  @@unique([studentId, parentId])
+}
+
+model Attendance {
+  id          String           @id @default(uuid())
+  studentId   String
+  student     StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date        DateTime
+  status      AttendanceStatus
+  remarks     String?
+  createdAt   DateTime         @default(now())
+
+  @@unique([studentId, date])
+}
+
+model Result {
+  id          String         @id @default(uuid())
+  studentId   String
+  student     StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject     String
+  examName    String
+  marks       Float
+  totalMarks  Float
+  createdAt   DateTime       @default(now())
+}
+
+model Announcement {
+  id          String    @id @default(uuid())
+  title       String
+  message     String
+  postedById  String
+  postedBy    User      @relation(fields: [postedById], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+}
+
+model Event {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  location    String
+  gallery     GalleryItem[]
+  createdAt   DateTime    @default(now())
+}
+
+model GalleryItem {
+  id          String   @id @default(uuid())
+  title       String
+  imageUrl    String
+  eventId     String?
+  event       Event?   @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+model AdmissionApplication {
+  id            String   @id @default(uuid())
+  studentName   String
+  guardianName  String
+  email         String
+  phone         String
+  notes         String?
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
+}
+
+model Feedback {
+  id            String           @id @default(uuid())
+  name          String
+  email         String
+  message       String
+  category      FeedbackCategory
+  isResolved    Boolean          @default(false)
+  createdAt     DateTime         @default(now())
+}

@@ -1,0 +1,16 @@
+{
+  "name": "gov-school-management-portal",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/frontend",
+    "dev:api": "npm run dev --workspace apps/backend",
+    "build": "npm run build --workspace apps/frontend",
+    "lint": "npm run lint --workspace apps/frontend",
+    "test": "npm run test --workspace apps/backend"
+  }
+}
