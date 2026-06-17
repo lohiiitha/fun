@@ -1,0 +1,10 @@
+node_modules/
+apps/*/node_modules/
+apps/frontend/.next/
+apps/frontend/out/
+apps/backend/generated/
+.env
+.env.*
+!.env.example
+coverage/
+.DS_Store
